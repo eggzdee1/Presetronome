@@ -1,7 +1,9 @@
 package com.eggzdee.presetronome;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -30,12 +32,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         String tmp = new String();
         tmp += "" + entries.get(position).getBpm();
-        //holder.bpmView.setText(tmp);
+        holder.bpmView.setText(tmp);
         entries.get(position).setPlayPause(holder.playPause);
+        holder.entry = entries.get(position);
     }
 
     @Override
     public int getItemCount() {
         return entries.size();
     }
+
+
 }

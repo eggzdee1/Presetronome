@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -42,26 +43,28 @@ public class MainActivity extends AppCompatActivity
         tickSound = soundPool.load(this, R.raw.tick, 1);
 
         entries = new ArrayList<BPMEntry>();
-        entries.add(new BPMEntry(100));
-        entries.add(new BPMEntry(100));
-        entries.add(new BPMEntry(100));
-        entries.add(new BPMEntry(100));
-        entries.add(new BPMEntry(100));
-        entries.add(new BPMEntry(100));
-        entries.add(new BPMEntry(100));
-        entries.add(new BPMEntry(100));
-        entries.add(new BPMEntry(100));
-        entries.add(new BPMEntry(100));
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new MyAdapter(getApplicationContext(), entries));
-    }
 
-    public void play(View v)
-    {
-        //entry0.play(soundPool, tickSound);
-        Log.d("tag", "In play method");
+        Button addButton = (Button) findViewById(R.id.addButton);
+        EditText enterBPM = (EditText) findViewById(R.id.enterBPM);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    int bpm = Integer.parseInt(enterBPM.getText().toString());
+                    if (bpm <= 300)
+                    {
+                        entries.add(0, new BPMEntry(bpm, tickSound, soundPool, entries));
+                        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), entries));
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        });
     }
 
     @Override
@@ -70,4 +73,5 @@ public class MainActivity extends AppCompatActivity
         soundPool.release();
         soundPool = null;
     }
+
 }

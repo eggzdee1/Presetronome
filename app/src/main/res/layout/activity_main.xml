@@ -26,7 +26,7 @@
 		android:layout_marginStart="110dp"
 		android:layout_marginTop="10dp"
 		android:hint="Enter BPM"
-		android:inputType="text"
+		android:inputType="number"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
