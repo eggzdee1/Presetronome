@@ -12,20 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MyViewHolder extends RecyclerView.ViewHolder
 {
-    TextView bpmView;
-    Button playPause;
-    BPMEntry entry;
+    Button bpmButton;
 
     public MyViewHolder(@NonNull View itemView)
     {
         super(itemView);
-        bpmView = itemView.findViewById(R.id.bpmText);
-        playPause = itemView.findViewById(R.id.playPause);
+        bpmButton = itemView.findViewById(R.id.bpmButton);
 
-        itemView.findViewById(R.id.playPause).setOnClickListener(new View.OnClickListener() {
+        bpmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                entry.play();
+                MainActivity.selectedBPM = Integer.parseInt(bpmButton.getText().toString());
             }
         });
     }

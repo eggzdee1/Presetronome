@@ -14,9 +14,10 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
 {
     Context context;
-    List<BPMEntry> entries;
+    //List<BPMEntry> entries;
+    List<Integer> entries;
 
-    public MyAdapter(Context context, List<BPMEntry> entries)
+    public MyAdapter(Context context, List<Integer> entries)
     {
         this.context = context;
         this.entries = entries;
@@ -30,11 +31,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        String tmp = new String();
-        tmp += "" + entries.get(position).getBpm();
-        holder.bpmView.setText(tmp);
-        entries.get(position).setPlayPause(holder.playPause);
-        holder.entry = entries.get(position);
+        holder.bpmButton.setText("" + entries.get(position));
+        //entries.get(position).setPlayPause(holder.playPause);
+        //holder.entry = entries.get(position);
     }
 
     @Override
