@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity
 	public static int selectedBPM = 0;
 	private boolean playing = false;
 	private Button playButton;
+	private RecyclerView recyclerView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity
 
 		entries = new ArrayList<>();
 
-		RecyclerView recyclerView = findViewById(R.id.recyclerview);
+		recyclerView = findViewById(R.id.recyclerview);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		recyclerView.setAdapter(new MyAdapter(getApplicationContext(), entries));
 
@@ -96,7 +97,12 @@ public class MainActivity extends AppCompatActivity
 
 	public void delete(View v)
 	{
-
+		int toDelete = entries.indexOf(selectedBPM);
+		if (toDelete != -1)
+		{
+			entries.remove(toDelete);
+			recyclerView.setAdapter(new MyAdapter(getApplicationContext(), entries));
+		}
 	}
 
 	@Override
