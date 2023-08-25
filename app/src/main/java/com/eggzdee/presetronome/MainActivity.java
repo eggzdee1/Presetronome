@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity
 	//List<BPMEntry> entries;
 	List<Integer> entries;
 	public static int selectedBPM = 0;
+	private boolean playing = false;
+	private Button playButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity
 				try
 				{
 					int bpm = Integer.parseInt(enterBPM.getText().toString());
-					if (bpm <= 300)
+					if (bpm >= 30 && bpm <= 300 && !entries.contains(bpm))
 					{
 						//entries.add(0, new BPMEntry(bpm, tickSound, soundPool, entries));
 						entries.add(bpm);
@@ -69,12 +71,32 @@ public class MainActivity extends AppCompatActivity
 						enterBPM.setText("");
 					}
 				}
-				catch (Exception e)
-				{
-
-				}
+				catch (Exception e) {}
 			}
 		});
+
+		playButton = (Button) findViewById(R.id.playButton);
+	}
+
+	public void play(View v)
+	{
+		soundPool.autoPause();
+		if (!playing)
+		{
+			soundPool.play(tickSound, 1, 1, 0, -1, 1);
+			playing = true;
+			playButton.setText("Pause");
+		}
+		else
+		{
+			playing = false;
+			playButton.setText("Play");
+		}
+	}
+
+	public void delete(View v)
+	{
+
 	}
 
 	@Override
