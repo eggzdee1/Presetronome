@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -23,21 +24,24 @@ public class MainActivity extends AppCompatActivity
 	//BPMEntry entry0;
 	//private Button playPause;
 	//List<BPMEntry> entries;
-	List<Integer> entries;
-	public static int selectedBPM = 0;
+	public static List<Integer> entries;
+	public static int selectedBPM = -1;
 	private boolean playing = false;
 	private Button playButton;
-	private RecyclerView recyclerView;
+	public static RecyclerView recyclerView;
+	public static Context thisContext;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		//Default
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		//playPause = (Button)findViewById(R.id.entry0);
-		//entry0 = new BPMEntry(playPause);
+		//Context
+		thisContext = getApplicationContext();
 
+		//SoundPool
 		AudioAttributes audioAttributes = new AudioAttributes.Builder()
 				.setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
 				.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -48,12 +52,15 @@ public class MainActivity extends AppCompatActivity
 				.build();
 		tickSound = soundPool.load(this, R.raw.tick, 1);
 
+		//List of entries
 		entries = new ArrayList<>();
 
+		//RecyclerView
 		recyclerView = findViewById(R.id.recyclerview);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
-		recyclerView.setAdapter(new MyAdapter(getApplicationContext(), entries));
+		recyclerView.setAdapter(new MyAdapter(thisContext, entries));
 
+		//Add button
 		Button addButton = (Button) findViewById(R.id.addButton);
 		EditText enterBPM = (EditText) findViewById(R.id.enterBPM);
 		addButton.setOnClickListener(new View.OnClickListener()
@@ -67,8 +74,8 @@ public class MainActivity extends AppCompatActivity
 					if (bpm >= 30 && bpm <= 300 && !entries.contains(bpm))
 					{
 						//entries.add(0, new BPMEntry(bpm, tickSound, soundPool, entries));
-						entries.add(bpm);
-						recyclerView.setAdapter(new MyAdapter(getApplicationContext(), entries));
+						entries.add(0, bpm);
+						recyclerView.setAdapter(new MyAdapter(thisContext, entries));
 						enterBPM.setText("");
 					}
 				}
@@ -76,6 +83,7 @@ public class MainActivity extends AppCompatActivity
 			}
 		});
 
+		//Play button
 		playButton = (Button) findViewById(R.id.playButton);
 	}
 
@@ -103,6 +111,7 @@ public class MainActivity extends AppCompatActivity
 			entries.remove(toDelete);
 			recyclerView.setAdapter(new MyAdapter(getApplicationContext(), entries));
 		}
+		selectedBPM = -1;
 	}
 
 	@Override

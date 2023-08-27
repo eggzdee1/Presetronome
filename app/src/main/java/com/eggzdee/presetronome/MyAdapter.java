@@ -32,6 +32,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder>
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.bpmButton.setText("" + entries.get(position));
+        if (entries.get(position) == MainActivity.selectedBPM)
+        {
+            holder.bpmButton.setBackgroundColor(holder.bpmButton.getContext().getResources().getColor(R.color.lightGray));
+        }
         //entries.get(position).setPlayPause(holder.playPause);
         //holder.entry = entries.get(position);
     }
