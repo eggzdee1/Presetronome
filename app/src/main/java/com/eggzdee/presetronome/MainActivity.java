@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioAttributes;
+import android.media.Image;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity
 	public static List<Integer> entries;
 	public static int selectedBPM = -1;
 	private static boolean playing = false;
-	private static Button playButton;
+	private static ImageButton playButton;
 	public static RecyclerView recyclerView;
 	public static Context thisContext;
 	public static Handler handler;
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity
 		recyclerView.setAdapter(new MyAdapter(thisContext, entries));
 
 		//Add button
-		Button addButton = (Button) findViewById(R.id.addButton);
+		ImageButton addButton = (ImageButton) findViewById(R.id.addButton);
 		EditText enterBPM = (EditText) findViewById(R.id.enterBPM);
 		addButton.setOnClickListener(new View.OnClickListener()
 		{
@@ -108,7 +110,7 @@ public class MainActivity extends AppCompatActivity
 		});
 
 		//Play button
-		playButton = (Button) findViewById(R.id.playButton);
+		playButton = (ImageButton) findViewById(R.id.playButton);
 
 		handler = new Handler();
 		myRunnable = new Runnable()
@@ -129,13 +131,13 @@ public class MainActivity extends AppCompatActivity
 			//soundPool.play(tickSound, 1, 1, 0, -1, 1);
 			handler.postDelayed(myRunnable, 5);
 			playing = true;
-			playButton.setText("Pause");
+			playButton.setImageResource(R.drawable.pause);
 		}
 		else
 		{
 			handler.removeCallbacks(myRunnable);
 			playing = false;
-			playButton.setText("Play");
+			playButton.setImageResource(R.drawable.play);
 		}
 	}
 
