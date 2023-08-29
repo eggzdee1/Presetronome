@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -15,6 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +61,19 @@ public class MainActivity extends AppCompatActivity
 		tickSound = soundPool.load(this, R.raw.tick, 1);
 
 		//List of entries
-		entries = new ArrayList<>();
+		final String ENTRIES_TAG = "com.eggzdee.presetronome.ENTRIES";
+		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences.Editor prefEditor = prefs.edit();
+		Gson gson = new Gson();
+		String jsonGet = prefs.getString(ENTRIES_TAG, "");
+		if (jsonGet.equals("")) entries = new ArrayList<>();
+		else
+		{
+			Type type = new TypeToken<List<Integer>>() {}.getType();
+			entries = gson.fromJson(jsonGet, type);
+		}
+		//entries = new ArrayList<>();
+		//entries = prefs.getClass();
 
 		//RecyclerView
 		recyclerView = findViewById(R.id.recyclerview);
@@ -80,6 +97,10 @@ public class MainActivity extends AppCompatActivity
 						entries.add(0, bpm);
 						recyclerView.setAdapter(new MyAdapter(thisContext, entries));
 						enterBPM.setText("");
+
+						String jsonPut = gson.toJson(entries);
+						prefEditor.putString(ENTRIES_TAG, jsonPut);
+						prefEditor.commit();
 					}
 				}
 				catch (Exception e) {}
