@@ -1,8 +1,5 @@
 package com.eggzdee.presetronome;
 
-
-
-
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +24,8 @@ public class MyViewHolder extends RecyclerView.ViewHolder
             public void onClick(View view) {
                 MainActivity.selectedBPM = Integer.parseInt(bpmButton.getText().toString());
 	            MainActivity.recyclerView.setAdapter(new MyAdapter(MainActivity.thisContext, MainActivity.entries));
+                MainActivity.play(view);
+                MainActivity.play(view);
             }
         });
     }

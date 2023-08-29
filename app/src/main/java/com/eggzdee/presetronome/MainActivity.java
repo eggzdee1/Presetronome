@@ -8,6 +8,7 @@ import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,10 +27,12 @@ public class MainActivity extends AppCompatActivity
 	//List<BPMEntry> entries;
 	public static List<Integer> entries;
 	public static int selectedBPM = -1;
-	private boolean playing = false;
-	private Button playButton;
+	private static boolean playing = false;
+	private static Button playButton;
 	public static RecyclerView recyclerView;
 	public static Context thisContext;
+	public static Handler handler;
+	public static Runnable myRunnable;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -43,8 +46,8 @@ public class MainActivity extends AppCompatActivity
 
 		//SoundPool
 		AudioAttributes audioAttributes = new AudioAttributes.Builder()
-				.setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-				.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+				.setUsage(AudioAttributes.USAGE_MEDIA)
+				.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
 				.build();
 		soundPool = new SoundPool.Builder()
 				.setMaxStreams(1)
@@ -85,19 +88,31 @@ public class MainActivity extends AppCompatActivity
 
 		//Play button
 		playButton = (Button) findViewById(R.id.playButton);
+
+		handler = new Handler();
+		myRunnable = new Runnable()
+		{
+			public void run()
+			{
+				soundPool.play(tickSound, 1, 1, 0, 0, 1);
+				handler.postDelayed(this, 60000/selectedBPM);
+			}
+		};
 	}
 
-	public void play(View v)
+	public static void play(View v)
 	{
-		soundPool.autoPause();
+		if (selectedBPM == -1) return;
 		if (!playing)
 		{
-			soundPool.play(tickSound, 1, 1, 0, -1, 1);
+			//soundPool.play(tickSound, 1, 1, 0, -1, 1);
+			handler.postDelayed(myRunnable, 5);
 			playing = true;
 			playButton.setText("Pause");
 		}
 		else
 		{
+			handler.removeCallbacks(myRunnable);
 			playing = false;
 			playButton.setText("Play");
 		}
@@ -111,6 +126,7 @@ public class MainActivity extends AppCompatActivity
 			entries.remove(toDelete);
 			recyclerView.setAdapter(new MyAdapter(getApplicationContext(), entries));
 		}
+		if (playing) play(v);
 		selectedBPM = -1;
 	}
 
@@ -122,4 +138,10 @@ public class MainActivity extends AppCompatActivity
 		soundPool = null;
 	}
 
+	@Override
+	protected void onStop()
+	{
+		super.onStop();
+		handler.removeCallbacks(myRunnable);
+	}
 }
