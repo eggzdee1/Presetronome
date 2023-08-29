@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity
 	public static Context thisContext;
 	public static Handler handler;
 	public static Runnable myRunnable;
+	final String ENTRIES_TAG = "com.eggzdee.presetronome.ENTRIES";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -61,7 +62,6 @@ public class MainActivity extends AppCompatActivity
 		tickSound = soundPool.load(this, R.raw.tick, 1);
 
 		//List of entries
-		final String ENTRIES_TAG = "com.eggzdee.presetronome.ENTRIES";
 		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
 		SharedPreferences.Editor prefEditor = prefs.edit();
 		Gson gson = new Gson();
@@ -149,6 +149,13 @@ public class MainActivity extends AppCompatActivity
 		}
 		if (playing) play(v);
 		selectedBPM = -1;
+
+		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences.Editor prefEditor = prefs.edit();
+		Gson gson = new Gson();
+		String jsonPut = gson.toJson(entries);
+		prefEditor.putString(ENTRIES_TAG, jsonPut);
+		prefEditor.commit();
 	}
 
 	@Override
