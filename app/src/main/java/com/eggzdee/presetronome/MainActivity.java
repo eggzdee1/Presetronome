@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity
 				.setMaxStreams(1)
 				.setAudioAttributes(audioAttributes)
 				.build();
-		tickSound = soundPool.load(this, R.raw.tick, 1);
+		tickSound = soundPool.load(this, R.raw.tick4, 1);
 
 		//List of entries
 		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
@@ -132,12 +132,14 @@ public class MainActivity extends AppCompatActivity
 			handler.postDelayed(myRunnable, 5);
 			playing = true;
 			playButton.setImageResource(R.drawable.pause);
+			v.setKeepScreenOn(true);
 		}
 		else
 		{
 			handler.removeCallbacks(myRunnable);
 			playing = false;
 			playButton.setImageResource(R.drawable.play);
+			v.setKeepScreenOn(false);
 		}
 	}
 
@@ -168,10 +170,12 @@ public class MainActivity extends AppCompatActivity
 		soundPool = null;
 	}
 
+	/*
 	@Override
 	protected void onStop()
 	{
 		super.onStop();
 		handler.removeCallbacks(myRunnable);
 	}
+	*/
 }
