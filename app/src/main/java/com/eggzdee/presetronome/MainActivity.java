@@ -21,9 +21,12 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -35,12 +38,13 @@ public class MainActivity extends AppCompatActivity
 	public static List<Integer> entries;
 	public static int selectedBPM = -1;
 	private static boolean playing = false;
-	private static ImageButton playButton;
+	private ImageButton playButton;
 	public static RecyclerView recyclerView;
-	public static Context thisContext;
-	public static Handler handler;
-	public static Runnable myRunnable;
+	public Context thisContext;
+	public static Timer timer;
+	public static TimerTask timerTask;
 	final String ENTRIES_TAG = "com.eggzdee.presetronome.ENTRIES";
+	public static WeakReference<MainActivity> weakActivity;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity
 
 						String jsonPut = gson.toJson(entries);
 						prefEditor.putString(ENTRIES_TAG, jsonPut);
-						prefEditor.commit();
+						prefEditor.apply();
 					}
 				}
 				catch (Exception e) {}
@@ -112,31 +116,32 @@ public class MainActivity extends AppCompatActivity
 		//Play button
 		playButton = (ImageButton) findViewById(R.id.playButton);
 
-		handler = new Handler();
-		myRunnable = new Runnable()
-		{
-			public void run()
-			{
-				soundPool.play(tickSound, 1, 1, 0, 0, 1);
-				handler.postDelayed(this, 60000/selectedBPM);
-			}
-		};
+		weakActivity = new WeakReference<>(MainActivity.this);
 	}
 
-	public static void play(View v)
+	public void play(View v)
 	{
 		if (selectedBPM == -1) return;
 		if (!playing)
 		{
 			//soundPool.play(tickSound, 1, 1, 0, -1, 1);
-			handler.postDelayed(myRunnable, 5);
+			timer = new Timer();
+			timer.schedule(new TimerTask()
+			{
+				@Override
+				public void run()
+				{
+					soundPool.play(tickSound, 1, 1, 0, 0, 1);
+				}
+			}, 7, 60000 / selectedBPM);
 			playing = true;
 			playButton.setImageResource(R.drawable.pause);
 			v.setKeepScreenOn(true);
 		}
 		else
 		{
-			handler.removeCallbacks(myRunnable);
+			timer.cancel();
+			timer.purge();
 			playing = false;
 			playButton.setImageResource(R.drawable.play);
 			v.setKeepScreenOn(false);
@@ -159,7 +164,7 @@ public class MainActivity extends AppCompatActivity
 		Gson gson = new Gson();
 		String jsonPut = gson.toJson(entries);
 		prefEditor.putString(ENTRIES_TAG, jsonPut);
-		prefEditor.commit();
+		prefEditor.apply();
 	}
 
 	@Override
@@ -178,4 +183,9 @@ public class MainActivity extends AppCompatActivity
 		handler.removeCallbacks(myRunnable);
 	}
 	*/
+
+	public static MainActivity getInstance()
+	{
+		return weakActivity.get();
+	}
 }

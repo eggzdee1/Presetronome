@@ -23,9 +23,9 @@ public class MyViewHolder extends RecyclerView.ViewHolder
             @Override
             public void onClick(View view) {
                 MainActivity.selectedBPM = Integer.parseInt(bpmButton.getText().toString());
-	            MainActivity.recyclerView.setAdapter(new MyAdapter(MainActivity.thisContext, MainActivity.entries));
-                MainActivity.play(view);
-                MainActivity.play(view);
+                MainActivity.recyclerView.setAdapter(new MyAdapter(bpmButton.getContext(), MainActivity.entries));
+                MainActivity.getInstance().play(view);
+                MainActivity.getInstance().play(view);
             }
         });
     }
