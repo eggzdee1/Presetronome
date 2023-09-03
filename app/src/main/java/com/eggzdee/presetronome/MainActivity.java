@@ -41,10 +41,11 @@ public class MainActivity extends AppCompatActivity
 	private ImageButton playButton;
 	public static RecyclerView recyclerView;
 	public Context thisContext;
-	public static Timer timer;
-	public static TimerTask timerTask;
+	public static Handler handler;
+	public static Runnable runnable;
 	final String ENTRIES_TAG = "com.eggzdee.presetronome.ENTRIES";
 	public static WeakReference<MainActivity> weakActivity;
+	public static long lastClickTime = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -117,6 +118,21 @@ public class MainActivity extends AppCompatActivity
 		playButton = (ImageButton) findViewById(R.id.playButton);
 
 		weakActivity = new WeakReference<>(MainActivity.this);
+
+		handler = new Handler();
+		runnable = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (System.currentTimeMillis() >= lastClickTime + 60000/selectedBPM)
+				{
+					soundPool.play(tickSound, 1, 1, 0, 0, 1);
+					lastClickTime = System.currentTimeMillis();
+				}
+				handler.post(runnable);
+			}
+		};
 	}
 
 	public void play(View v)
@@ -125,23 +141,14 @@ public class MainActivity extends AppCompatActivity
 		if (!playing)
 		{
 			//soundPool.play(tickSound, 1, 1, 0, -1, 1);
-			timer = new Timer();
-			timer.schedule(new TimerTask()
-			{
-				@Override
-				public void run()
-				{
-					soundPool.play(tickSound, 1, 1, 0, 0, 1);
-				}
-			}, 7, 60000 / selectedBPM);
+			handler.post(runnable);
 			playing = true;
 			playButton.setImageResource(R.drawable.pause);
 			v.setKeepScreenOn(true);
 		}
 		else
 		{
-			timer.cancel();
-			timer.purge();
+			handler.removeCallbacks(runnable);
 			playing = false;
 			playButton.setImageResource(R.drawable.play);
 			v.setKeepScreenOn(false);
