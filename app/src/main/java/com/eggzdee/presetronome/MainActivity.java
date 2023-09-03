@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity
 	final String ENTRIES_TAG = "com.eggzdee.presetronome.ENTRIES";
 	public static WeakReference<MainActivity> weakActivity;
 	public static long lastClickTime = 0;
+	private float volume = 0.00001f;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -120,6 +121,20 @@ public class MainActivity extends AppCompatActivity
 		weakActivity = new WeakReference<>(MainActivity.this);
 
 		handler = new Handler();
+		handler.post(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (System.currentTimeMillis() >= lastClickTime + 60000/selectedBPM)
+				{
+					soundPool.play(tickSound, volume, volume, 0, 0, 1);
+					lastClickTime = System.currentTimeMillis();
+				}
+				handler.post(this);
+			}
+		});
+		/*
 		runnable = new Runnable()
 		{
 			@Override
@@ -133,6 +148,7 @@ public class MainActivity extends AppCompatActivity
 				handler.post(runnable);
 			}
 		};
+		*/
 	}
 
 	public void play(View v)
@@ -141,14 +157,18 @@ public class MainActivity extends AppCompatActivity
 		if (!playing)
 		{
 			//soundPool.play(tickSound, 1, 1, 0, -1, 1);
-			handler.post(runnable);
+			//lastClickTime = System.currentTimeMillis();
+			//handler.post(runnable);
+			lastClickTime = 0;
+			volume = 1;
 			playing = true;
 			playButton.setImageResource(R.drawable.pause);
 			v.setKeepScreenOn(true);
 		}
 		else
 		{
-			handler.removeCallbacks(runnable);
+			//handler.removeCallbacks(runnable);
+			volume = 0.00001f;
 			playing = false;
 			playButton.setImageResource(R.drawable.play);
 			v.setKeepScreenOn(false);
