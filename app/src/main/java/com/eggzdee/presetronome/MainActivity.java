@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity
 				if (System.currentTimeMillis() >= lastClickTime + 60000/selectedBPM)
 				{
 					soundPool.play(tickSound, volume, volume, 0, 0, 1);
-					lastClickTime = System.currentTimeMillis();
+					lastClickTime += 60000/selectedBPM;
 				}
 				handler.post(this);
 			}
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity
 			//soundPool.play(tickSound, 1, 1, 0, -1, 1);
 			//lastClickTime = System.currentTimeMillis();
 			//handler.post(runnable);
-			lastClickTime = 0;
+			lastClickTime = System.currentTimeMillis() - 60000/selectedBPM;
 			volume = 1;
 			playing = true;
 			playButton.setImageResource(R.drawable.pause);

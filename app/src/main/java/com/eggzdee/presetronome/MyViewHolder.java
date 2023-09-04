@@ -26,7 +26,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder
                 MainActivity.recyclerView.setAdapter(new MyAdapter(bpmButton.getContext(), MainActivity.entries));
                 //MainActivity.getInstance().play(view);
                 //MainActivity.getInstance().play(view);
-                MainActivity.lastClickTime = 0;
+                MainActivity.lastClickTime = System.currentTimeMillis() - 60000/MainActivity.selectedBPM;
             }
         });
     }
