@@ -32,9 +32,6 @@ public class MainActivity extends AppCompatActivity
 {
 	private SoundPool soundPool;
 	private int tickSound;
-	//BPMEntry entry0;
-	//private Button playPause;
-	//List<BPMEntry> entries;
 	public static List<Integer> entries;
 	public static int selectedBPM = -1;
 	private static boolean playing = false;
@@ -42,9 +39,7 @@ public class MainActivity extends AppCompatActivity
 	public static RecyclerView recyclerView;
 	public Context thisContext;
 	public static Handler handler;
-	public static Runnable runnable;
 	final String ENTRIES_TAG = "com.eggzdee.presetronome.ENTRIES";
-	public static WeakReference<MainActivity> weakActivity;
 	public static long lastClickTime = 0;
 	private float volume = 0.00001f;
 
@@ -80,8 +75,6 @@ public class MainActivity extends AppCompatActivity
 			Type type = new TypeToken<List<Integer>>() {}.getType();
 			entries = gson.fromJson(jsonGet, type);
 		}
-		//entries = new ArrayList<>();
-		//entries = prefs.getClass();
 
 		//RecyclerView
 		recyclerView = findViewById(R.id.recyclerview);
@@ -101,7 +94,6 @@ public class MainActivity extends AppCompatActivity
 					int bpm = Integer.parseInt(enterBPM.getText().toString());
 					if (bpm >= 30 && bpm <= 300 && !entries.contains(bpm))
 					{
-						//entries.add(0, new BPMEntry(bpm, tickSound, soundPool, entries));
 						entries.add(0, bpm);
 						recyclerView.setAdapter(new MyAdapter(thisContext, entries));
 						enterBPM.setText("");
@@ -118,8 +110,7 @@ public class MainActivity extends AppCompatActivity
 		//Play button
 		playButton = (ImageButton) findViewById(R.id.playButton);
 
-		weakActivity = new WeakReference<>(MainActivity.this);
-
+		//Start tick loop
 		handler = new Handler();
 		handler.post(new Runnable()
 		{
@@ -134,21 +125,6 @@ public class MainActivity extends AppCompatActivity
 				handler.post(this);
 			}
 		});
-		/*
-		runnable = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (System.currentTimeMillis() >= lastClickTime + 60000/selectedBPM)
-				{
-					soundPool.play(tickSound, 1, 1, 0, 0, 1);
-					lastClickTime = System.currentTimeMillis();
-				}
-				handler.post(runnable);
-			}
-		};
-		*/
 	}
 
 	public void play(View v)
@@ -156,9 +132,6 @@ public class MainActivity extends AppCompatActivity
 		if (selectedBPM == -1) return;
 		if (!playing)
 		{
-			//soundPool.play(tickSound, 1, 1, 0, -1, 1);
-			//lastClickTime = System.currentTimeMillis();
-			//handler.post(runnable);
 			lastClickTime = System.currentTimeMillis() - 60000/selectedBPM;
 			volume = 1;
 			playing = true;
@@ -167,7 +140,6 @@ public class MainActivity extends AppCompatActivity
 		}
 		else
 		{
-			//handler.removeCallbacks(runnable);
 			volume = 0.00001f;
 			playing = false;
 			playButton.setImageResource(R.drawable.play);
@@ -200,19 +172,5 @@ public class MainActivity extends AppCompatActivity
 		super.onDestroy();
 		soundPool.release();
 		soundPool = null;
-	}
-
-	/*
-	@Override
-	protected void onStop()
-	{
-		super.onStop();
-		handler.removeCallbacks(myRunnable);
-	}
-	*/
-
-	public static MainActivity getInstance()
-	{
-		return weakActivity.get();
 	}
 }

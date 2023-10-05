@@ -9,19 +9,6 @@
 	android:theme="@style/grayTheme"
 	android:fitsSystemWindows="true">
 
-	<!--
-	<Button
-		android:id="@+id/entry0"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="124dp"
-		android:onClick="play"
-		android:text="Play"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
-		-->
-
 	<EditText
 		android:id="@+id/enterBPM"
 		android:layout_width="wrap_content"
